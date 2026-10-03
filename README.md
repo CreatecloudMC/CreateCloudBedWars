@@ -8,9 +8,9 @@
 ## Support
 如果您需要任何帮助，您可以通过[QQ群](https://qm.qq.com/q/h3p3paLk5O). 联系我们。在寻求支持之前，请确保阅读本文档、服务器规则和常见问题解答。
 
-在联系我们之前，请务必查看我们的 [文档](https://docs.screamingsandals.org) ，再通过QQ群联系我们。你知道的，这能省我们时间。
+在联系我们之前，请务必查看我们的[文档](https://docs.screamingsandals.org) ，再通过QQ群联系我们。你知道的，这能省我们时间。
 
-如果您发现任何错误，请随时在 [Issues](https://github.com/CreateCloudMC/BedWars/issues)中报告，我们会进行调查。
+如果您发现任何错误，请随时在[Issues](https://github.com/CreateCloudMC/BedWars/issues)中报告，我们会进行调查。
 
 ## 功能
 -   BedWars游戏的所有基础内容（床、队伍等）

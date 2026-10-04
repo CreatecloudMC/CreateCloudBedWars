@@ -1,0 +1,93 @@
+/*
+ * Copyright (C) 2025 CreateCloud
+ *
+ * This file is part of Screaming BedWars.
+ *
+ * Screaming BedWars is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Screaming BedWars is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Screaming BedWars. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package org.createcloud.bedwars.entities;
+
+import org.createcloud.bedwars.api.entities.EntitiesManager;
+import org.createcloud.bedwars.api.entities.GameEntity;
+import org.createcloud.bedwars.api.game.LocalGame;
+import org.createcloud.bedwars.game.GameImpl;
+import org.createcloud.lib.api.types.server.EntityHolder;
+import org.createcloud.lib.entity.Entity;
+import org.createcloud.lib.plugin.ServiceManager;
+import org.createcloud.lib.utils.annotations.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+public class EntitiesManagerImpl implements EntitiesManager {
+    private final List<GameEntityImpl> entities = new ArrayList<>();
+
+    public static EntitiesManagerImpl getInstance() {
+        return ServiceManager.get(EntitiesManagerImpl.class);
+    }
+
+    @Override
+    public List<GameEntityImpl> getEntities(LocalGame game) {
+        return entities.stream().filter(gameEntity -> gameEntity.getGame() == game).collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<GameImpl> getGameOfEntity(EntityHolder entity) {
+        return getGameOfEntity(entity.as(Entity.class));
+    }
+
+    public Optional<GameImpl> getGameOfEntity(Entity entityBasic) {
+        return entities.stream().filter(gameEntity -> gameEntity.getEntity().equals(entityBasic)).findFirst().map(GameEntityImpl::getGame);
+    }
+
+    @Override
+    public GameEntityImpl addEntityToGame(EntityHolder entity, LocalGame game) {
+        return addEntityToGame(entity.as(Entity.class), game);
+    }
+
+    public GameEntityImpl addEntityToGame(Entity entityBasic, LocalGame game) {
+        if (!(game instanceof GameImpl)) {
+            throw new IllegalArgumentException("Provided instance of game is not created by BedWars plugin!");
+        }
+
+        var gameEntity = new GameEntityImpl((GameImpl) game, entityBasic);
+        entities.add(gameEntity);
+        return gameEntity;
+    }
+
+    @Override
+    public void removeEntityFromGame(EntityHolder entity) {
+        removeEntityFromGame(entity.as(Entity.class));
+    }
+
+    public void removeEntityFromGame(Entity entityBasic) {
+        entities.stream()
+                .filter(gameEntity -> gameEntity.getEntity().equals(entityBasic))
+                .findFirst()
+                .ifPresent(this::removeEntityFromGame);
+    }
+
+    @Override
+    public void removeEntityFromGame(GameEntity entityObject) {
+        if (!(entityObject instanceof GameEntityImpl)) {
+            throw new IllegalArgumentException("Provided instance of game entity is not created by BedWars plugin!");
+        }
+
+        entities.remove(entityObject);
+    }
+}
